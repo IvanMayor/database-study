@@ -34,56 +34,30 @@ public class PlanesService extends DataBase {
         }
     }
 
-    private ResultSet getResultSet(){
-
+    public List<PlanesModel> getAllPlanes() {
+        List<PlanesModel> allPlanes = new ArrayList<>();
         String sqlRequestAll = "SELECT * FROM planes";
-        try {
-            Connection con = getConnection();
-            try {
-                Statement stmt = con.createStatement();
 
-                try {
+        try (Connection con = getConnection()) {
+            try (Statement stmt = con.createStatement()) {
+                try (ResultSet resultSet = stmt.executeQuery(sqlRequestAll)) {
+                    while (resultSet.next()) {
 
-                    ResultSet resultSet = stmt.executeQuery(sqlRequestAll);
+                        PlanesModel plane = new PlanesModel();
 
-                    return resultSet;
+                        plane.setId(resultSet.getInt(1));
+                        plane.setBrand(resultSet.getString(2));
+                        plane.setFuelPerHr(resultSet.getBigDecimal(3));
+                        plane.setIsAvailable(resultSet.getBoolean(4));
 
+                        allPlanes.add(plane);
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                stmt.close();
-                System.out.println("Create Statement connection is closed!!! " + stmt.isClosed());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-            con.close();
-            System.out.println("Database Connection is closed!!! " + con.isClosed());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public List<PlanesModel> getAllPlanes() {
-        List<PlanesModel> allPlanes = new ArrayList<>();
-        try {
-
-            ResultSet resultSet = getResultSet();
-
-            while (resultSet.next()) {
-
-                PlanesModel plane = new PlanesModel();
-
-                plane.setId(resultSet.getInt(1));
-                plane.setBrand(resultSet.getString(2));
-                plane.setFuelPerHr(resultSet.getBigDecimal(3));
-                plane.setIsAvailable(resultSet.getBoolean(4));
-
-                allPlanes.add(plane);
-            }
-            resultSet.close();
-            System.out.println("The result set is closed " + resultSet.isClosed());
         } catch (SQLException e) {
             e.printStackTrace();
         }
