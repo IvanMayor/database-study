@@ -16,9 +16,10 @@ public class App {
         System.out.println("Hello World!");
 
         PlanesService planesService = new PlanesService();
-//        planesService.createPlane("Boeing 787-9", BigDecimal.valueOf(5300.00), true);
+//        planesService.createPlane("Airbus A350-900", BigDecimal.valueOf(6100.00), true);
 
         List<PlanesModel> planes = planesService.getAllPlanes();
+        planesService.updatePlane(6);
 
         for (PlanesModel plane : planes) {
             int id = plane.getId();
