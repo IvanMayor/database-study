@@ -6,8 +6,15 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlanesService extends DataBase {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DataBase.class);
+
     public void createPlane(String brand, BigDecimal fuel_per_hr, Boolean is_available) {
         try (Connection con = getConnection()) {
 
@@ -88,5 +95,50 @@ public class PlanesService extends DataBase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getTableNames() {
+        try (Connection conn = getConnection()) {
+            DatabaseMetaData rsmd = conn.getMetaData();
+
+            ResultSet tablesResultSet = rsmd.getTables(null, null, "%", null);
+            while (tablesResultSet.next()) {
+                System.out.println(tablesResultSet.getString("TABLE_NAME"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getColumnCount() {
+
+        String getAllPlanes = "SELECT * FROM planes";
+
+        try (Connection conn = getConnection()) {
+
+            try (Statement resultSet = conn.createStatement()) {
+
+                ResultSet rs = resultSet.executeQuery(getAllPlanes);
+
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int nrColumns = rsmd.getColumnCount();
+
+                IntStream.range(1, nrColumns).forEach(i -> {
+                    try {
+                        LOG.info(rsmd.getColumnName(i));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

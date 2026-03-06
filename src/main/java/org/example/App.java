@@ -29,5 +29,7 @@ public class App {
 
             System.out.println(id + " - " + brand + " - " + fuel + " - " + available + ".");
         }
+//        planesService.getTableNames();
+        planesService.getColumnCount();
     }
 }
